@@ -49,6 +49,15 @@ def call_groq_chat(prompt: str) -> str:
             err_json = resp.json()
             error_detail = err_json.get("error") or err_json
 
+            # Provide a hint when a model has been decommissioned
+            if isinstance(err_json, dict):
+                err_code = err_json.get("code") or err_json.get("error", {}).get("code")
+                if err_code == "model_decommissioned":
+                    error_detail = (
+                        f"Model '{GROQ_MODEL}' is decommissioned. "
+                        "Please update GROQ_MODEL to a supported option from "
+                        "https://console.groq.com/docs/deprecations."
+                    )
         except Exception:
             error_detail = resp.text
 
