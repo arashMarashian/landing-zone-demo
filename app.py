@@ -6,12 +6,13 @@ app = Flask(__name__)
 
 # ============================
 #   Groq Client (OpenAI-compatible)
+#   Lightweight helper to keep the demo readable
 # ============================
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") or os.getenv("AI_API_KEY")
 
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")  # مدل پیش‌فرض
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")  # Default model
 
 if not GROQ_API_KEY:
     print("⚠️ WARNING: No Groq API key found in env (AI_API_KEY / GROQ_API_KEY).")
@@ -19,8 +20,7 @@ if not GROQ_API_KEY:
 
 def call_groq_chat(prompt: str) -> str:
     """
-    یه هلسپر ساده که به Groq chat completions وصل میشه
-    و متن جواب رو برمی‌گردونه.
+    Simple helper that calls Groq chat completions and returns the text answer.
     """
     if not GROQ_API_KEY:
         raise RuntimeError("Groq API key is not configured.")
@@ -65,7 +65,7 @@ def call_groq_chat(prompt: str) -> str:
 
     data = resp.json()
 
-    # ساختار مثل OpenAIه
+    # Response structure matches the OpenAI Chat Completions API
     return data["choices"][0]["message"]["content"]
 
 
@@ -81,6 +81,13 @@ def home():
     log_level = os.getenv("LOG_LEVEL")
     ai_key_set = GROQ_API_KEY is not None
 
+    ai_key_preview = None
+    if ai_key_set:
+        if len(GROQ_API_KEY) >= 4:
+            ai_key_preview = f"{GROQ_API_KEY[:2]}...{GROQ_API_KEY[-2:]}"
+        else:
+            ai_key_preview = "**masked**"
+
     return render_template(
         "index.html",
         app_mode=app_mode,
@@ -88,11 +95,12 @@ def home():
         log_level=log_level,
         vnet_enabled=vnet_enabled,
         ai_key_set=ai_key_set,
+        ai_key_preview=ai_key_preview,
     )
 
 
 # ============================
-#   /ai-test  (فرم HTML)
+#   /ai-test  (HTML prompt form)
 # ============================
 
 @app.route("/ai-test", methods=["GET", "POST"])
@@ -103,9 +111,9 @@ def ai_test():
         user_prompt = (request.form.get("prompt") or "").strip()
 
         if not user_prompt:
-            ai_response = "⚠️ لطفاً یک متن وارد کن."
+            ai_response = "⚠️ Please enter a prompt."
         elif not GROQ_API_KEY:
-            ai_response = "⚠️ Groq API Key در محیط (App Settings) پیدا نشد."
+            ai_response = "⚠️ Groq API key is missing from the environment (App Settings)."
         else:
             try:
                 answer = call_groq_chat(user_prompt)
@@ -117,12 +125,12 @@ def ai_test():
 
 
 # ============================
-#   /api/openai-test  (حالا در واقع Groq تست میشه)
+#   /api/openai-test  (Groq-backed sample)
 # ============================
 
 @app.route("/api/openai-test")
-def openai_test():  # اسم رو نگه داشتیم
-    question = request.args.get("q", "سلام، فقط با یک کلمه جواب بده: OK")
+def openai_test():  # Route name kept for compatibility
+    question = request.args.get("q", "Say hello in exactly one word: OK")
 
     if not GROQ_API_KEY:
         return jsonify({
@@ -163,5 +171,5 @@ def health():
 # ============================
 
 if __name__ == "__main__":
-    # برای تست لوکال
+    # Local debugging entry point
     app.run(host="0.0.0.0", port=8000, debug=True)

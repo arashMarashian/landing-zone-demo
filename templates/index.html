@@ -14,22 +14,30 @@
         }
 
         h1 {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-size: 32px;
             font-weight: bold;
         }
 
+        .intro {
+            color: #a0aec0;
+            margin-bottom: 32px;
+            max-width: 880px;
+            line-height: 1.5;
+        }
+
         .cta {
             display: inline-block;
-            padding: 12px 18px;
-            background: linear-gradient(90deg, #238636, #2ea043);
+            padding: 16px 26px;
+            background: linear-gradient(90deg, #2ea043, #45b36b);
             color: #fff;
             text-decoration: none;
             border-radius: 8px;
-            font-weight: 600;
-            margin-bottom: 24px;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 26px;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
-            box-shadow: 0 8px 20px rgba(46, 160, 67, 0.25);
+            box-shadow: 0 12px 28px rgba(69, 179, 107, 0.28);
         }
 
         .cta:hover {
@@ -48,8 +56,9 @@
             border: 1px solid #30363d;
             padding: 18px;
             border-radius: 10px;
-            margin-bottom: 15px;
-            width: 420px;
+            margin-bottom: 12px;
+            width: 360px;
+            font-size: 13px;
         }
 
         .label {
@@ -59,7 +68,7 @@
         }
 
         .value {
-            font-size: 18px;
+            font-size: 16px;
             margin-top: 4px;
         }
 
@@ -74,11 +83,12 @@
         .raw-box {
             background: #0d1117;
             border: 1px solid #30363d;
-            padding: 20px;
+            padding: 16px;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 18px;
             white-space: pre-line;
-            width: 90%;
+            width: 82%;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -86,6 +96,11 @@
 <body>
 
     <h1>Arash Landing Zone</h1>
+
+    <p class="intro">
+        A lightweight demo that ties together governance, networking, CI/CD, and runtime tuning in one small web app.
+        It highlights the essentials you tackled while deploying to Azure Landing Zones.
+    </p>
 
     <a class="cta" href="/ai-test">🧪 Open the AI Test</a>
 
@@ -116,7 +131,7 @@
         <div class="label">AI API Key</div>
         <div class="value">
             {% if ai_key_set %}
-                <span class="green">(set)</span> – masked
+                <span class="green">(set)</span> – {{ ai_key_preview }}
             {% else %}
                 <span class="red">NOT SET</span>
             {% endif %}
@@ -130,7 +145,7 @@
         DEPLOY_REGION = {{ region }}<br>
         LOG_LEVEL     = {{ log_level }}<br>
         VNET_ENABLED  = {{ vnet_enabled }}<br>
-        AI_API_KEY    = {{ "(set)" if ai_key_set else "(not set)" }}<br>
+        AI_API_KEY    = {{ ai_key_preview if ai_key_set else "(not set)" }}<br>
     </div>
 
     <p style="margin-top: 40px; color:#8b949e;">
@@ -138,6 +153,12 @@
     </p>
 
     <div class="section-title">Azure Landing Zone Concepts I Learned While Building This Project</div>
+    <div class="card" style="width: 100%; box-sizing: border-box;">
+        <div class="value" style="color: #c9d1d9; line-height: 1.6; font-size: 14px;">
+            You practiced end-to-end delivery: deploying to App Service with managed identities, wiring VNets and governance policies,
+            keeping secrets in App Settings, shipping via GitHub Actions, and validating reliability with health checks and logs.
+        </div>
+    </div>
     <div class="raw-box" style="width: 100%; line-height: 1.5;">
         <ol>
             <li><strong>App Service Deployment Architecture</strong>
