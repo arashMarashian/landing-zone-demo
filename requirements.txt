@@ -1,3 +1,2 @@
-flask
-google-generativeai>=0.7.0
-gunicorn
+flask==3.0.3
+gunicorn==21.2.0
