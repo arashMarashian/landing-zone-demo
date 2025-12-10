@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arash Landing Zone Demo</title>
+    <style>
+        body { font-family: Arial; background: #111; color: #eee; padding: 40px; }
+        .card { background:#222; padding:20px; margin-bottom:20px; border-radius:8px; }
+        .title { font-size:24px; margin-bottom:10px; }
+        code { color:#4ef; }
+    </style>
+</head>
+
+<body>
+    <h1>Arash Landing Zone Demo</h1>
+    <p>Azure App Service + VNet Integration + App Settings</p>
+
+    <div class="card">
+        <div class="title">Metadata</div>
+        <p><b>APP_MODE:</b> {{ app_mode }}</p>
+        <p><b>REGION:</b> {{ region }}</p>
+        <p><b>LOG_LEVEL:</b> {{ log_level }}</p>
+        <p><b>VNET_ENABLED:</b> {{ vnet_enabled }}</p>
+    </div>
+
+    <div class="card">
+        <a href="/ai-test" style="color:#9f6;">🔮 Test OpenAI Integration</a>
+    </div>
+
+</body>
+</html>
