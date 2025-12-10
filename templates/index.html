@@ -110,7 +110,7 @@
         DEPLOY_REGION = {{ region }}<br>
         LOG_LEVEL     = {{ log_level }}<br>
         VNET_ENABLED  = {{ vnet_enabled }}<br>
-        AI_API_KEY    = {{ {ai_key_set} if ai_key_set else "(not set)" }}<br>
+        AI_API_KEY    = {{ "(set)" if ai_key_set else "(not set)" }}<br>
     </div>
 
     <p style="margin-top: 40px; color:#8b949e;">
