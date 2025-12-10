@@ -8,12 +8,10 @@ app = Flask(__name__)
 #   Groq Client (OpenAI-compatible)
 # ============================
 
-GROQ_API_KEY = (
-    os.getenv("GROQ_API_KEY")
-)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY") or os.getenv("AI_API_KEY")
 
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama3-8b-8192")  # مدل پیش‌فرض
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")  # مدل پیش‌فرض
 
 if not GROQ_API_KEY:
     print("⚠️ WARNING: No Groq API key found in env (AI_API_KEY / GROQ_API_KEY).")
@@ -41,7 +39,30 @@ def call_groq_chat(prompt: str) -> str:
     }
 
     resp = requests.post(url, json=payload, headers=headers, timeout=30)
-    resp.raise_for_status()
+
+    try:
+        resp.raise_for_status()
+    except requests.HTTPError as http_err:
+        # Try to surface Groq's error payload for easier debugging (e.g., invalid model)
+        error_detail = ""
+        try:
+            err_json = resp.json()
+            error_detail = err_json.get("error") or err_json
+
+            # Provide a hint when a model has been decommissioned
+            if isinstance(err_json, dict):
+                err_code = err_json.get("code") or err_json.get("error", {}).get("code")
+                if err_code == "model_decommissioned":
+                    error_detail = (
+                        f"Model '{GROQ_MODEL}' is decommissioned. "
+                        "Please update GROQ_MODEL to a supported option from "
+                        "https://console.groq.com/docs/deprecations."
+                    )
+        except Exception:
+            error_detail = resp.text
+
+        raise requests.HTTPError(f"{http_err} | Detail: {error_detail}") from http_err
+
     data = resp.json()
 
     # ساختار مثل OpenAIه
