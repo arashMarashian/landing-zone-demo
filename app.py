@@ -11,7 +11,7 @@ app = Flask(__name__)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") or os.getenv("AI_API_KEY")
 
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama3-8b-8192")  # مدل پیش‌فرض
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")  # مدل پیش‌فرض
 
 if not GROQ_API_KEY:
     print("⚠️ WARNING: No Groq API key found in env (AI_API_KEY / GROQ_API_KEY).")
@@ -48,6 +48,7 @@ def call_groq_chat(prompt: str) -> str:
         try:
             err_json = resp.json()
             error_detail = err_json.get("error") or err_json
+
         except Exception:
             error_detail = resp.text
 
