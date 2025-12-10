@@ -1,170 +1,147 @@
 import os
-import socket
-from flask import Flask, jsonify, render_template_string
+import requests
+from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-TEMPLATE = """
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Arash Landing Zone Dashboard</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-      margin: 0;
-      padding: 40px;
-    }
-    h1 { margin-bottom: 4px; }
-    h2 { margin-top: 32px; margin-bottom: 12px; }
-    .subtitle { color: #9ca3af; margin-bottom: 28px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      background: #020617;
-      border-radius: 16px;
-      padding: 14px 16px;
-      border: 1px solid #1f2937;
-    }
-    .label {
-      font-size: 11px;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-    .value {
-      font-size: 16px;
-      margin-top: 3px;
-    }
-    .pill {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: #111827;
-      color: #9ca3af;
-    }
-    .ok { color: #4ade80; }
-    .warn { color: #facc15; }
-    .fail { color: #f97373; }
-    a { color: #60a5fa; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .footer {
-      margin-top: 32px;
-      font-size: 12px;
-      color: #6b7280;
-    }
-    code {
-      background: #020617;
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Arash Landing Zone</h1>
-  <div class="subtitle">Azure Landing Zone demo – App Service + VNet Integration + App Settings</div>
+# ============================
+#   Groq Client (OpenAI-compatible)
+# ============================
 
-  <h2>Metadata</h2>
-  <div class="grid">
-    <div class="card">
-      <div class="label">App mode</div>
-      <div class="value">{{ app_mode }}</div>
-      <div class="pill">LOG_LEVEL={{ log_level }}</div>
-    </div>
-    <div class="card">
-      <div class="label">Region</div>
-      <div class="value">{{ deploy_region }}</div>
-      <div class="pill">{{ hostname }}</div>
-    </div>
-    <div class="card">
-      <div class="label">VNet integration</div>
-      {% if vnet_enabled %}
-        <div class="value ok">Enabled</div>
-      {% else %}
-        <div class="value warn">Not enabled</div>
-      {% endif %}
-      <div class="pill"><a href="/health">/health</a></div>
-    </div>
-    <div class="card">
-      <div class="label">AI API key</div>
-      <div class="value">
-        {% if ai_key_masked %}
-          {{ ai_key_masked }}
-        {% else %}
-          <span class="warn">Not configured</span>
-        {% endif %}
-      </div>
-    </div>
-  </div>
+GROQ_API_KEY = (
+    os.getenv("AI_API_KEY")
+    or os.getenv("GROQ_API_KEY")
+)
 
-  <h2>Raw settings</h2>
-  <div class="card">
-    <pre style="margin:0; font-size:13px; line-height:1.4;">
-APP_MODE       = {{ app_mode }}
-DEPLOY_REGION  = {{ deploy_region }}
-LOG_LEVEL      = {{ log_level }}
-VNET_ENABLED   = {{ vnet_enabled|lower }}
-AI_API_KEY     = {{ ai_key_masked or "None" }}
-    </pre>
-  </div>
+GROQ_API_BASE = "https://api.groq.com/openai/v1"
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama3-8b-8192")  # مدل پیش‌فرض
 
-  <div class="footer">
-    Built as a hands-on Azure Landing Zone demo (governance, network, and app layer in one place).
-  </div>
-</body>
-</html>
-"""
+if not GROQ_API_KEY:
+    print("⚠️ WARNING: No Groq API key found in env (AI_API_KEY / GROQ_API_KEY).")
 
-def get_env(name: str, default: str | None = None) -> str | None:
-    return os.getenv(name, default)
+
+def call_groq_chat(prompt: str) -> str:
+    """
+    یه هلسپر ساده که به Groq chat completions وصل میشه
+    و متن جواب رو برمی‌گردونه.
+    """
+    if not GROQ_API_KEY:
+        raise RuntimeError("Groq API key is not configured.")
+
+    url = f"{GROQ_API_BASE}/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": GROQ_MODEL,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.3,
+    }
+
+    resp = requests.post(url, json=payload, headers=headers, timeout=30)
+    resp.raise_for_status()
+    data = resp.json()
+
+    # ساختار مثل OpenAIه
+    return data["choices"][0]["message"]["content"]
+
+
+# ============================
+#   Home Page  (/)
+# ============================
 
 @app.route("/")
-def index():
-    app_mode = get_env("APP_MODE", "landing-zone-demo")
-    deploy_region = get_env("DEPLOY_REGION", "northeurope")
-    log_level = get_env("LOG_LEVEL", "debug")
-    vnet_enabled_raw = get_env("VNET_ENABLED", "false")
-    ai_key = get_env("AI_API_KEY")
+def home():
+    vnet_enabled = os.getenv("VNET_ENABLED", "false")
+    app_mode = os.getenv("APP_MODE")
+    region = os.getenv("DEPLOY_REGION")
+    log_level = os.getenv("LOG_LEVEL")
+    ai_key_set = GROQ_API_KEY is not None
 
-    vnet_enabled = str(vnet_enabled_raw).lower() in ("1", "true", "yes", "y")
-
-    if ai_key and len(ai_key) > 3 and ai_key.lower() != "xxxx":
-        ai_key_masked = ai_key[:3] + "***"
-    elif ai_key:
-        ai_key_masked = "(set, masked)"
-    else:
-        ai_key_masked = None
-
-    hostname = socket.gethostname()
-
-    return render_template_string(
-        TEMPLATE,
+    return render_template(
+        "index.html",
         app_mode=app_mode,
-        deploy_region=deploy_region,
+        region=region,
         log_level=log_level,
         vnet_enabled=vnet_enabled,
-        ai_key_masked=ai_key_masked,
-        hostname=hostname,
+        ai_key_set=ai_key_set,
     )
+
+
+# ============================
+#   /ai-test  (فرم HTML)
+# ============================
+
+@app.route("/ai-test", methods=["GET", "POST"])
+def ai_test():
+    ai_response = None
+
+    if request.method == "POST":
+        user_prompt = (request.form.get("prompt") or "").strip()
+
+        if not user_prompt:
+            ai_response = "⚠️ لطفاً یک متن وارد کن."
+        elif not GROQ_API_KEY:
+            ai_response = "⚠️ Groq API Key در محیط (App Settings) پیدا نشد."
+        else:
+            try:
+                answer = call_groq_chat(user_prompt)
+                ai_response = answer
+            except Exception as e:
+                ai_response = f"⚠️ Error calling Groq: {e}"
+
+    return render_template("ai_test.html", ai_response=ai_response)
+
+
+# ============================
+#   /api/openai-test  (حالا در واقع Groq تست میشه)
+# ============================
+
+@app.route("/api/openai-test")
+def openai_test():  # اسم رو نگه داشتیم
+    question = request.args.get("q", "سلام، فقط با یک کلمه جواب بده: OK")
+
+    if not GROQ_API_KEY:
+        return jsonify({
+            "status": "error",
+            "error": "Groq API key is not configured in environment variables."
+        }), 500
+
+    try:
+        answer = call_groq_chat(question)
+        return jsonify({
+            "status": "ok",
+            "question": question,
+            "answer": answer,
+            "provider": "groq-llama3"
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e),
+        }), 500
+
+
+# ============================
+#   Health Probe
+# ============================
 
 @app.route("/health")
 def health():
-    return jsonify(
-        status="ok",
-        app="arash-lz-webapp",
-        mode=get_env("APP_MODE", "landing-zone-demo"),
-        region=get_env("DEPLOY_REGION", "northeurope"),
-    )
+    return {
+        "status": "healthy",
+        "app": "landing-zone-demo",
+        "provider": "groq-llama3"
+    }
+
+
+# ============================
+#   Local Run
+# ============================
 
 if __name__ == "__main__":
-    # لو لوکال اجرا می‌کنی
+    # برای تست لوکال
     app.run(host="0.0.0.0", port=8000, debug=True)
