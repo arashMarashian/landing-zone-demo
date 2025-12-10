@@ -14,9 +14,35 @@
         }
 
         h1 {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-size: 32px;
             font-weight: bold;
+        }
+
+        .intro {
+            color: #a0aec0;
+            margin-bottom: 32px;
+            max-width: 880px;
+            line-height: 1.5;
+        }
+
+        .cta {
+            display: inline-block;
+            padding: 16px 26px;
+            background: linear-gradient(90deg, #2ea043, #45b36b);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 26px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: 0 12px 28px rgba(69, 179, 107, 0.28);
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(46, 160, 67, 0.35);
         }
 
         .section-title {
@@ -30,8 +56,9 @@
             border: 1px solid #30363d;
             padding: 18px;
             border-radius: 10px;
-            margin-bottom: 15px;
-            width: 420px;
+            margin-bottom: 12px;
+            width: 360px;
+            font-size: 13px;
         }
 
         .label {
@@ -41,7 +68,7 @@
         }
 
         .value {
-            font-size: 18px;
+            font-size: 16px;
             margin-top: 4px;
         }
 
@@ -56,11 +83,12 @@
         .raw-box {
             background: #0d1117;
             border: 1px solid #30363d;
-            padding: 20px;
+            padding: 16px;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 18px;
             white-space: pre-line;
-            width: 90%;
+            width: 82%;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -68,6 +96,13 @@
 <body>
 
     <h1>Arash Landing Zone</h1>
+
+    <p class="intro">
+        A lightweight demo that ties together governance, networking, CI/CD, and runtime tuning in one small web app.
+        It highlights the essentials you tackled while deploying to Azure Landing Zones.
+    </p>
+
+    <a class="cta" href="/ai-test">🧪 Open the AI Test</a>
 
     <div class="section-title">Metadata</div>
 
@@ -96,7 +131,7 @@
         <div class="label">AI API Key</div>
         <div class="value">
             {% if ai_key_set %}
-                <span class="green">(set)</span> – masked
+                <span class="green">(set)</span> – {{ ai_key_preview }}
             {% else %}
                 <span class="red">NOT SET</span>
             {% endif %}
@@ -110,12 +145,106 @@
         DEPLOY_REGION = {{ region }}<br>
         LOG_LEVEL     = {{ log_level }}<br>
         VNET_ENABLED  = {{ vnet_enabled }}<br>
-        AI_API_KEY    = {{ {ai_key_set} if ai_key_set else "(not set)" }}<br>
+        AI_API_KEY    = {{ ai_key_preview if ai_key_set else "(not set)" }}<br>
     </div>
 
     <p style="margin-top: 40px; color:#8b949e;">
         Built as a hands-on Azure Landing Zone demo (governance, network, and app layer in one place).
     </p>
+
+    <div class="section-title">Azure Landing Zone Concepts I Learned While Building This Project</div>
+    <div class="card" style="width: 100%; box-sizing: border-box;">
+        <div class="value" style="color: #c9d1d9; line-height: 1.6; font-size: 14px;">
+            You practiced end-to-end delivery: deploying to App Service with managed identities, wiring VNets and governance policies,
+            keeping secrets in App Settings, shipping via GitHub Actions, and validating reliability with health checks and logs.
+        </div>
+    </div>
+    <div class="raw-box" style="width: 100%; line-height: 1.5;">
+        <ol>
+            <li><strong>App Service Deployment Architecture</strong>
+                <ul>
+                    <li>How Azure App Service handles Linux-based web apps</li>
+                    <li>Understanding deployment slots (Production vs Staging)</li>
+                    <li>Difference between ZIP Deploy, OneDeploy, and Oryx build pipeline</li>
+                    <li>How SCM (Kudu) manages app packages and runtime execution</li>
+                </ul>
+            </li>
+            <li><strong>Identity &amp; Access Management (IAM) in Azure</strong>
+                <ul>
+                    <li>Creating and using User-Assigned Managed Identity</li>
+                    <li>Assigning appropriate RBAC roles (Website Contributor, Reader, Owner)</li>
+                    <li>Understanding role scope (Resource vs Resource Group vs Subscription)</li>
+                    <li>Using Managed Identity inside GitHub Actions (federated credentials)</li>
+                </ul>
+            </li>
+            <li><strong>Azure Landing Zone Governance Concepts</strong>
+                <ul>
+                    <li>Azure Policy impact during resource creation</li>
+                    <li>Required tags (Owner, Environment, Project) for compliance</li>
+                    <li>Naming standards and resource hierarchy considerations</li>
+                    <li>Understanding Subscription-level restrictions on deployments</li>
+                </ul>
+            </li>
+            <li><strong>Networking Fundamentals in an LZ</strong>
+                <ul>
+                    <li>Enabling VNet integration for App Service</li>
+                    <li>Understanding how outbound traffic works from App Service</li>
+                    <li>Using /health endpoints for probes and network diagnostics</li>
+                    <li>Differences between private and public App Service access</li>
+                </ul>
+            </li>
+            <li><strong>Application Configuration &amp; Secret Management</strong>
+                <ul>
+                    <li>Storing secrets (like API keys) in App Settings</li>
+                    <li>Using environment variables inside your app (APP_MODE, REGION, LOG_LEVEL, AI_API_KEY)</li>
+                    <li>Separating code from configuration – a core LZ best practice</li>
+                    <li>Secure handling of third-party API keys (OpenAI, Google Gemini, Groq)</li>
+                </ul>
+            </li>
+            <li><strong>CI/CD Pipeline with GitHub Actions (Azure Standard)</strong>
+                <ul>
+                    <li>Building a Python app using GitHub Actions</li>
+                    <li>Authenticating GitHub → Azure using OIDC (OpenID Connect)</li>
+                    <li>Creating artifacts, packaging, and deploying through pipelines</li>
+                    <li>Debugging CI/CD failures (409 conflicts, build timeouts, permission errors)</li>
+                </ul>
+            </li>
+            <li><strong>Observability &amp; Monitoring Basics</strong>
+                <ul>
+                    <li>Using Azure Deployment Center logs</li>
+                    <li>Understanding App Service build logs (Oryx)</li>
+                    <li>Using /health route for monitoring and probes</li>
+                    <li>Troubleshooting internal server errors and platform-level failures</li>
+                </ul>
+            </li>
+            <li><strong>Azure Resource Organization Principles</strong>
+                <ul>
+                    <li>Importance of Resource Groups in Landing Zones</li>
+                    <li>Consistency in resource naming conventions</li>
+                    <li>Applying LZ governance rules while deploying workloads</li>
+                    <li>Understanding the impact of subscription-level tagging policies</li>
+                </ul>
+            </li>
+            <li><strong>Cloud Application Architecture (Landing Zone Perspective)</strong>
+                <ul>
+                    <li>Designing apps to be cloud-friendly (stateless, config-driven, restart-safe)</li>
+                    <li>Decoupling application from underlying infrastructure</li>
+                    <li>Handling dynamic configurations through environment variables</li>
+                    <li>Understanding how the platform deploys, restarts, and scales apps</li>
+                </ul>
+            </li>
+            <li><strong>Real-World Deployment Troubleshooting</strong>
+                <ul>
+                    <li>Oryx build freezes</li>
+                    <li>OneDeploy 409 conflicts</li>
+                    <li>Identity permission issues</li>
+                    <li>Tag policy failures</li>
+                    <li>Long deployment times</li>
+                    <li>API quota &amp; authentication errors (OpenAI / Gemini / Groq)</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
 
 </body>
 </html>
