@@ -1,10 +1,13 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, jsonify, request
 from openai import OpenAI
+
 
 app = Flask(__name__)
 
+# OpenAI client - key از Azure App Settings خونده میشه (AI_API_KEY)
 client = OpenAI(api_key=os.getenv("AI_API_KEY"))
+
 
 
 @app.route("/")
@@ -37,6 +40,31 @@ def ai_test():
 def health():
     return {"status": "healthy", "app": "landing-zone-demo"}
 
+@app.route("/api/openai-test")
+def openai_test():
+    """یک تست ساده که از OpenAI جواب می‌گیرد."""
+    question = request.args.get("q", "سلام، فقط بگو OK")
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",   # یا هر مدلی که تو پنل‌ات فعاله
+            messages=[
+                {"role": "user", "content": question}
+            ],
+        )
+
+        answer = response.choices[0].message.content
+
+        return jsonify({
+            "status": "ok",
+            "question": question,
+            "answer": answer,
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e),
+        }), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
