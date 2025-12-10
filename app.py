@@ -9,8 +9,7 @@ app = Flask(__name__)
 # ============================
 
 GROQ_API_KEY = (
-    os.getenv("AI_API_KEY")
-    or os.getenv("GROQ_API_KEY")
+    os.getenv("GROQ_API_KEY")
 )
 
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
