@@ -1,30 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Arash Landing Zone Demo</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arash Landing Zone</title>
+
     <style>
-        body { font-family: Arial; background: #111; color: #eee; padding: 40px; }
-        .card { background:#222; padding:20px; margin-bottom:20px; border-radius:8px; }
-        .title { font-size:24px; margin-bottom:10px; }
-        code { color:#4ef; }
+        body {
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: "Segoe UI", sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            font-size: 22px;
+            color: #58a6ff;
+        }
+
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            width: 420px;
+        }
+
+        .label {
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+
+        .value {
+            font-size: 18px;
+            margin-top: 4px;
+        }
+
+        .value.green {
+            color: #3fb950;
+        }
+
+        .value.red {
+            color: #f85149;
+        }
+
+        .raw-box {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            white-space: pre-line;
+            width: 90%;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Arash Landing Zone Demo</h1>
-    <p>Azure App Service + VNet Integration + App Settings</p>
 
+    <h1>Arash Landing Zone</h1>
+
+    <div class="section-title">Metadata</div>
+
+    <!-- APP MODE -->
     <div class="card">
-        <div class="title">Metadata</div>
-        <p><b>APP_MODE:</b> {{ app_mode }}</p>
-        <p><b>REGION:</b> {{ region }}</p>
-        <p><b>LOG_LEVEL:</b> {{ log_level }}</p>
-        <p><b>VNET_ENABLED:</b> {{ vnet_enabled }}</p>
+        <div class="label">APP MODE</div>
+        <div class="value">{{ app_mode }}</div>
     </div>
 
+    <!-- REGION -->
     <div class="card">
-        <a href="/ai-test" style="color:#9f6;">🔮 Test OpenAI Integration</a>
+        <div class="label">Region</div>
+        <div class="value">{{ region }}</div>
     </div>
+
+    <!-- VNET INTEGRATION -->
+    <div class="card">
+        <div class="label">VNet Integration</div>
+        <div class="value {{ 'green' if vnet_enabled == 'true' else 'red' }}">
+            {{ "Enabled" if vnet_enabled == "true" else "Disabled" }}
+        </div>
+    </div>
+
+    <!-- AI API KEY STATUS -->
+    <div class="card">
+        <div class="label">AI API Key</div>
+        <div class="value">
+            {% if ai_key_set %}
+                <span class="green">(set)</span> – masked
+            {% else %}
+                <span class="red">NOT SET</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RAW SETTINGS -->
+    <div class="section-title">Raw settings</div>
+    <div class="raw-box">
+        APP_MODE      = {{ app_mode }}<br>
+        DEPLOY_REGION = {{ region }}<br>
+        LOG_LEVEL     = {{ log_level }}<br>
+        VNET_ENABLED  = {{ vnet_enabled }}<br>
+        AI_API_KEY    = {{ "(set, masked)" if ai_key_set else "(not set)" }}<br>
+    </div>
+
+    <p style="margin-top: 40px; color:#8b949e;">
+        Built as a hands-on Azure Landing Zone demo (governance, network, and app layer in one place).
+    </p>
 
 </body>
 </html>
