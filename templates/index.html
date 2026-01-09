@@ -44,100 +44,35 @@
         }
 
         h1 {
-            margin: 0 0 8px;
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: .02em;
-        }
-
-        .subtitle {
-            margin: 0;
-            color: var(--muted);
-            max-width: 560px;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(88, 166, 255, 0.12);
-            border: 1px solid rgba(88, 166, 255, 0.5);
-            color: var(--accent);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
             margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: bold;
         }
 
-        .hero-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-end;
+        .intro {
+            color: #a0aec0;
+            margin-bottom: 32px;
+            max-width: 880px;
+            line-height: 1.5;
         }
 
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #2ea043, #45b36b);
+        .cta {
+            display: inline-block;
+            padding: 16px 26px;
+            background: linear-gradient(90deg, #2ea043, #45b36b);
             color: #fff;
+            text-decoration: none;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 14px 30px rgba(46, 160, 67, 0.35);
-            border: none;
-            cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 26px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: 0 12px 28px rgba(69, 179, 107, 0.28);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.05);
-            box-shadow: 0 10px 24px rgba(46, 160, 67, 0.45);
-        }
-
-        .btn-ghost {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            border: 1px solid var(--border);
-            background: rgba(10, 14, 22, 0.7);
-            color: var(--muted);
-            font-size: 11px;
-            text-decoration: none;
-        }
-
-        .btn-ghost:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        main {
-            display: grid;
-            grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
-            gap: 24px;
-        }
-
-        @media (max-width: 880px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .hero-actions {
-                align-items: flex-start;
-            }
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(46, 160, 67, 0.35);
         }
 
         .section-title {
@@ -158,8 +93,9 @@
             border: 1px solid var(--border);
             padding: 14px 15px 13px;
             border-radius: 10px;
+            margin-bottom: 12px;
+            width: 360px;
             font-size: 13px;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
         }
 
         .card-label {
@@ -169,8 +105,8 @@
             letter-spacing: .08em;
         }
 
-        .card-value {
-            font-size: 15px;
+        .value {
+            font-size: 16px;
             margin-top: 4px;
         }
 
@@ -204,29 +140,14 @@
         .text-red { color: var(--red); }
 
         .raw-box {
-            background: rgba(13, 17, 23, 0.9);
-            border: 1px solid var(--border);
-            padding: 12px 14px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            padding: 16px;
             border-radius: 10px;
-            font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 12px;
+            margin-top: 18px;
             white-space: pre-line;
-            line-height: 1.55;
-            margin-top: 10px;
-        }
-
-        .skills-list {
-            margin: 6px 0 0;
-            padding-left: 18px;
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        footer {
-            margin-top: 26px;
-            font-size: 11px;
-            color: var(--muted);
+            width: 82%;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -248,139 +169,149 @@
             </p>
         </div>
 
-        <div class="hero-actions">
-            <a class="btn-primary" href="/ai-test">
-                <span>🧪 Open AI Test</span>
-            </a>
-            <a class="btn-ghost" href="/health">
-                <span>Health probe</span>
-                <span style="width:6px;height:6px;border-radius:999px;background:var(--green);"></span>
-            </a>
+    <p class="intro">
+        A lightweight demo that ties together governance, networking, CI/CD, and runtime tuning in one small web app.
+        It highlights the essentials you tackled while deploying to Azure Landing Zones.
+    </p>
+
+    <a class="cta" href="/ai-test">Open the AI Test</a>
+
+    <div class="section-title">Metadata</div>
+
+    <div class="card">
+        <div class="label">APP MODE</div>
+        <div class="value">{{ app_mode }}</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Region</div>
+        <div class="value">{{ region }}</div>
+    </div>
+
+    <div class="card">
+        <div class="label">VNet Integration</div>
+        <div class="value {{ 'green' if vnet_enabled == 'true' else 'red' }}">
+            {{ "Enabled" if vnet_enabled == "true" else "Disabled" }}
         </div>
-    </header>
+    </div>
 
-    <!-- ===================== MAIN CONTENT ===================== -->
-    <main>
-        <!-- LEFT COLUMN: METADATA + RAW SETTINGS -->
-        <section>
-            <div class="section-title">Workload metadata (from App Settings)</div>
+    <div class="card">
+        <div class="label">AI API Key</div>
+        <div class="value">
+            {% if ai_key_set %}
+                <span class="green">Configured</span> — {{ ai_key_preview }}
+            {% else %}
+                <span class="red">Not configured</span>
+            {% endif %}
+        </div>
+    </div>
 
-            <div class="cards-grid">
+    <div class="section-title">Raw settings</div>
+    <div class="raw-box">
+        APP_MODE      = {{ app_mode }}<br>
+        DEPLOY_REGION = {{ region }}<br>
+        LOG_LEVEL     = {{ log_level }}<br>
+        VNET_ENABLED  = {{ vnet_enabled }}<br>
+        AI_API_KEY    = {{ ai_key_preview if ai_key_set else "not configured" }}<br>
+    </div>
 
-                <!-- APP MODE -->
-                <div class="card">
-                    <div class="card-label">App mode</div>
-                    <div class="card-value">
-                        {{ app_mode or "landing-zone-demo" }}
-                    </div>
-                    <div class="tag" style="margin-top:8px;">
-                        <span class="tag-dot"></span>
-                        <span>Represents the deployment flavor / environment label.</span>
-                    </div>
-                </div>
+    <p style="margin-top: 40px; color:#8b949e;">
+        Built as a hands-on Azure Landing Zone demo (governance, network, and app layer in one place).
+    </p>
 
-                <!-- REGION -->
-                <div class="card">
-                    <div class="card-label">Region</div>
-                    <div class="card-value">
-                        {{ region or "northeurope" }}
-                    </div>
-                    <div class="tag" style="margin-top:8px;">
-                        <span class="tag-dot"></span>
-                        <span>Landing Zone hosting region for this app.</span>
-                    </div>
-                </div>
-
-                <!-- LOG LEVEL -->
-                <div class="card">
-                    <div class="card-label">Log level</div>
-                    <div class="card-value">
-                        {{ log_level or "info" }}
-                    </div>
-                    <div class="tag" style="margin-top:8px;">
-                        <span class="tag-dot"></span>
-                        <span>Runtime logging configuration driven by LZ standards.</span>
-                    </div>
-                </div>
-
-                <!-- VNET INTEGRATION -->
-                <div class="card">
-                    <div class="card-label">VNet integration</div>
-                    <div class="card-value">
-                        {% if vnet_enabled == "true" %}
-                            <span class="text-green">Enabled</span>
-                        {% else %}
-                            <span class="text-red">Disabled</span>
-                        {% endif %}
-                    </div>
-                    <div class="tag" style="margin-top:8px;">
-                        <span class="tag-dot {% if vnet_enabled == 'true' %}green{% else %}red{% endif %}"></span>
-                        <span>Connectivity from App Service into the LZ virtual network.</span>
-                    </div>
-                </div>
-
-                <!-- AI API KEY STATUS -->
-                <div class="card">
-                    <div class="card-label">AI API key</div>
-                    <div class="card-value">
-                        {% if ai_key_set %}
-                            <span class="text-green">(set)</span>
-                            &nbsp;{{ ai_key_preview }}
-                        {% else %}
-                            <span class="text-red">Not configured</span>
-                        {% endif %}
-                    </div>
-                    <div class="tag" style="margin-top:8px;">
-                        <span class="tag-dot {% if ai_key_set %}green{% else %}red{% endif %}"></span>
-                        <span>Secret injected via App Settings, not hard-coded in code.</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RAW SETTINGS -->
-            <div class="section-title" style="margin-top:16px;">Raw settings (as seen by the app)</div>
-            <div class="raw-box">
-APP_MODE      = {{ app_mode or "landing-zone-demo" }}
-DEPLOY_REGION = {{ region or "northeurope" }}
-LOG_LEVEL     = {{ log_level or "info" }}
-VNET_ENABLED  = {{ vnet_enabled or "false" }}
-AI_API_KEY    = {{ ai_key_preview if ai_key_set else "(not set)" }}
-            </div>
-        </section>
-
-        <!-- RIGHT COLUMN: LZ SKILLS SUMMARY -->
-        <aside>
-            <div class="section-title">Landing Zone concepts demonstrated</div>
-
-            <div class="card" style="margin-bottom:10px;">
-                <div class="card-value" style="font-size:14px;">
-                    This single web app touches multiple Azure Landing Zone pillars:
-                    deployment, identity, governance, networking, configuration, and CI/CD.
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-label">Key topics</div>
-                <ul class="skills-list">
-                    <li>App Service deployment on Linux with Oryx &amp; OneDeploy.</li>
-                    <li>User-Assigned Managed Identity &amp; RBAC role assignment.</li>
-                    <li>Azure Policy &amp; mandatory tagging for compliant resources.</li>
-                    <li>VNet integration patterns for App Service workloads.</li>
-                    <li>Configuration via App Settings &amp; environment variables.</li>
-                    <li>GitHub Actions CI/CD with OIDC trust to Azure.</li>
-                    <li>Health endpoints and basic observability for the app.</li>
-                    <li>Organizing resources using Landing Zone naming &amp; RG structure.</li>
-                    <li>Troubleshooting real deployment issues (409, identity, policy, API).</li>
+    <div class="section-title">Azure Landing Zone Concepts I Learned While Building This Project</div>
+    <div class="card" style="width: 100%; box-sizing: border-box;">
+        <div class="value" style="color: #c9d1d9; line-height: 1.6; font-size: 14px;">
+            You practiced end-to-end delivery: deploying to App Service with managed identities, wiring VNets and governance policies,
+            keeping secrets in App Settings, shipping via GitHub Actions, and validating reliability with health checks and logs.
+        </div>
+    </div>
+    <div class="raw-box" style="width: 100%; line-height: 1.5;">
+        <ol>
+            <li><strong>App Service Deployment Architecture</strong>
+                <ul>
+                    <li>How Azure App Service handles Linux-based web apps</li>
+                    <li>Understanding deployment slots (Production vs Staging)</li>
+                    <li>Difference between ZIP Deploy, OneDeploy, and Oryx build pipeline</li>
+                    <li>How SCM (Kudu) manages app packages and runtime execution</li>
                 </ul>
-            </div>
-        </aside>
-    </main>
+            </li>
+            <li><strong>Identity &amp; Access Management (IAM) in Azure</strong>
+                <ul>
+                    <li>Creating and using User-Assigned Managed Identity</li>
+                    <li>Assigning appropriate RBAC roles (Website Contributor, Reader, Owner)</li>
+                    <li>Understanding role scope (Resource vs Resource Group vs Subscription)</li>
+                    <li>Using Managed Identity inside GitHub Actions (federated credentials)</li>
+                </ul>
+            </li>
+            <li><strong>Azure Landing Zone Governance Concepts</strong>
+                <ul>
+                    <li>Azure Policy impact during resource creation</li>
+                    <li>Required tags (Owner, Environment, Project) for compliance</li>
+                    <li>Naming standards and resource hierarchy considerations</li>
+                    <li>Understanding Subscription-level restrictions on deployments</li>
+                </ul>
+            </li>
+            <li><strong>Networking Fundamentals in an LZ</strong>
+                <ul>
+                    <li>Enabling VNet integration for App Service</li>
+                    <li>Understanding how outbound traffic works from App Service</li>
+                    <li>Using /health endpoints for probes and network diagnostics</li>
+                    <li>Differences between private and public App Service access</li>
+                </ul>
+            </li>
+            <li><strong>Application Configuration &amp; Secret Management</strong>
+                <ul>
+                    <li>Storing secrets (like API keys) in App Settings</li>
+                    <li>Using environment variables inside your app (APP_MODE, REGION, LOG_LEVEL, AI_API_KEY)</li>
+                    <li>Separating code from configuration – a core LZ best practice</li>
+                    <li>Secure handling of third-party API keys (OpenAI, Google Gemini, Groq)</li>
+                </ul>
+            </li>
+            <li><strong>CI/CD Pipeline with GitHub Actions (Azure Standard)</strong>
+                <ul>
+                    <li>Building a Python app using GitHub Actions</li>
+                    <li>Authenticating GitHub → Azure using OIDC (OpenID Connect)</li>
+                    <li>Creating artifacts, packaging, and deploying through pipelines</li>
+                    <li>Debugging CI/CD failures (409 conflicts, build timeouts, permission errors)</li>
+                </ul>
+            </li>
+            <li><strong>Observability &amp; Monitoring Basics</strong>
+                <ul>
+                    <li>Using Azure Deployment Center logs</li>
+                    <li>Understanding App Service build logs (Oryx)</li>
+                    <li>Using /health route for monitoring and probes</li>
+                    <li>Troubleshooting internal server errors and platform-level failures</li>
+                </ul>
+            </li>
+            <li><strong>Azure Resource Organization Principles</strong>
+                <ul>
+                    <li>Importance of Resource Groups in Landing Zones</li>
+                    <li>Consistency in resource naming conventions</li>
+                    <li>Applying LZ governance rules while deploying workloads</li>
+                    <li>Understanding the impact of subscription-level tagging policies</li>
+                </ul>
+            </li>
+            <li><strong>Cloud Application Architecture (Landing Zone Perspective)</strong>
+                <ul>
+                    <li>Designing apps to be cloud-friendly (stateless, config-driven, restart-safe)</li>
+                    <li>Decoupling application from underlying infrastructure</li>
+                    <li>Handling dynamic configurations through environment variables</li>
+                    <li>Understanding how the platform deploys, restarts, and scales apps</li>
+                </ul>
+            </li>
+            <li><strong>Real-World Deployment Troubleshooting</strong>
+                <ul>
+                    <li>Oryx build freezes</li>
+                    <li>OneDeploy 409 conflicts</li>
+                    <li>Identity permission issues</li>
+                    <li>Tag policy failures</li>
+                    <li>Long deployment times</li>
+                    <li>API quota &amp; authentication errors (OpenAI / Gemini / Groq)</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
 
-    <footer>
-        Built as a hands-on Azure Landing Zone workload demo – governance, network, identity,
-        configuration and CI/CD all surfaced through one small web application.
-    </footer>
-
-</div>
 </body>
 </html>

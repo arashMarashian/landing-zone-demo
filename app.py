@@ -4,18 +4,13 @@ from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-# ============================
-#   Groq Client (OpenAI-compatible)
-#   Lightweight helper to keep the demo readable
-# ============================
-
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") or os.getenv("AI_API_KEY")
 
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")  # Default model
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 if not GROQ_API_KEY:
-    print("⚠️ WARNING: No Groq API key found in env (AI_API_KEY / GROQ_API_KEY).")
+    print("Warning: No Groq API key found in env (AI_API_KEY / GROQ_API_KEY).")
 
 
 def call_groq_chat(prompt: str) -> str:
@@ -43,13 +38,11 @@ def call_groq_chat(prompt: str) -> str:
     try:
         resp.raise_for_status()
     except requests.HTTPError as http_err:
-        # Try to surface Groq's error payload for easier debugging (e.g., invalid model)
         error_detail = ""
         try:
             err_json = resp.json()
             error_detail = err_json.get("error") or err_json
 
-            # Provide a hint when a model has been decommissioned
             if isinstance(err_json, dict):
                 err_code = err_json.get("code") or err_json.get("error", {}).get("code")
                 if err_code == "model_decommissioned":
@@ -65,13 +58,7 @@ def call_groq_chat(prompt: str) -> str:
 
     data = resp.json()
 
-    # Response structure matches the OpenAI Chat Completions API
     return data["choices"][0]["message"]["content"]
-
-
-# ============================
-#   Home Page  (/)
-# ============================
 
 @app.route("/")
 def home():
@@ -98,11 +85,6 @@ def home():
         ai_key_preview=ai_key_preview,
     )
 
-
-# ============================
-#   /ai-test  (HTML prompt form)
-# ============================
-
 @app.route("/ai-test", methods=["GET", "POST"])
 def ai_test():
     ai_response = None
@@ -111,25 +93,20 @@ def ai_test():
         user_prompt = (request.form.get("prompt") or "").strip()
 
         if not user_prompt:
-            ai_response = "⚠️ Please enter a prompt."
+            ai_response = "Please enter a prompt so I can send it to the model."
         elif not GROQ_API_KEY:
-            ai_response = "⚠️ Groq API key is missing from the environment (App Settings)."
+            ai_response = "The Groq API key is missing from the environment settings."
         else:
             try:
                 answer = call_groq_chat(user_prompt)
                 ai_response = answer
             except Exception as e:
-                ai_response = f"⚠️ Error calling Groq: {e}"
+                ai_response = f"There was a problem calling Groq: {e}"
 
     return render_template("ai_test.html", ai_response=ai_response)
 
-
-# ============================
-#   /api/openai-test  (Groq-backed sample)
-# ============================
-
 @app.route("/api/openai-test")
-def openai_test():  # Route name kept for compatibility
+def openai_test():
     question = request.args.get("q", "Say hello in exactly one word: OK")
 
     if not GROQ_API_KEY:
@@ -152,11 +129,6 @@ def openai_test():  # Route name kept for compatibility
             "error": str(e),
         }), 500
 
-
-# ============================
-#   Health Probe
-# ============================
-
 @app.route("/health")
 def health():
     return {
@@ -165,11 +137,5 @@ def health():
         "provider": "groq-llama3"
     }
 
-
-# ============================
-#   Local Run
-# ============================
-
 if __name__ == "__main__":
-    # Local debugging entry point
     app.run(host="0.0.0.0", port=8000, debug=True)
